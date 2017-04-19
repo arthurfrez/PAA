@@ -59,6 +59,13 @@ double MyGraph::getEdge(int v1, int v2) {
 }
 
 //------------------------------------------------------------------------------
+// get_all_edges: retorna o vetor com todas a arestas do vertice
+//------------------------------------------------------------------------------
+double* MyGraph::get_all_edges(int v) {
+  return matrix[v];
+}
+
+//------------------------------------------------------------------------------
 // getDegree: Calcula o grau do vertice
 //------------------------------------------------------------------------------
 int MyGraph::getDegree(int v) {

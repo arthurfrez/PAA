@@ -21,6 +21,7 @@ public:
 	void constructGraph(int n, int coor[MAX_CITY][MAX_CITY]);
 	void printGraph();
 	double getEdge(int v1, int v2);
+	double* get_all_edges(int v);
 
 private:
 	void nullifyEdge(int v1, int v2);
