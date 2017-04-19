@@ -23,24 +23,10 @@ struct execInstance {
 };
 
 //------------------------------------------------------------------------------
-// read_and_construct: metodo para ler entrada e montar o grafo
-//------------------------------------------------------------------------------
-void read_and_construct(MyGraph* g) {
-  int coords[2][100];
-  int n;
-  scanf("%i", &n);
-
-  for(int i = 0; i < n; i++)
-    scanf("%i %i", &coords[0][i], &coords[1][i]);
-
-  g->constructGraph(n, coords);
-}
-
-//------------------------------------------------------------------------------
 // BruteForce: solucao usando forca bruta
 //------------------------------------------------------------------------------
 double BruteForce(MyGraph* g, int* &path) {
-  double resp = -1.0;
+  double resp = 10000000.0;
   int size = g->getVertexNum();
   std::queue<execInstance> exec;
 
@@ -70,13 +56,27 @@ double BruteForce(MyGraph* g, int* &path) {
         }
       }
     }
-    else if(act.sum > resp) {
-      resp = act.sum;
+    else if((act.sum + g->getEdge(act.path[size-1], 0)) < resp) {
+      resp = act.sum + g->getEdge(act.path[size-1], 0);
       path = act.path;
     }
   }
 
   return resp;
+}
+
+//------------------------------------------------------------------------------
+// read_and_construct: metodo para ler entrada e montar o grafo
+//------------------------------------------------------------------------------
+void read_and_construct(MyGraph* g) {
+  int coords[2][100];
+  int n;
+  scanf("%i", &n);
+
+  for(int i = 0; i < n; i++)
+    scanf("%i %i", &coords[0][i], &coords[1][i]);
+
+  g->constructGraph(n, coords);
 }
 
 //------------------------------------------------------------------------------
