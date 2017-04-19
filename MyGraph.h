@@ -30,4 +30,4 @@ private:
 	void cleanGraph();
 };
 
-#endif
+#endif // MyGraph_H

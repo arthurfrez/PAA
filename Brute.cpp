@@ -3,9 +3,9 @@
 #include <vector>
 #include <queue>
 
-int* path;
-
-// instancia de execucao da pilha
+//=====================================================================
+// STRUCT DE INSTANCIA DA EXECUCAO DA FILE
+//=====================================================================
 struct execInstance {
   int act;
   double sum;
@@ -39,18 +39,16 @@ void read_and_construct(MyGraph* g) {
 //------------------------------------------------------------------------------
 // BruteForce: solucao usando forca bruta
 //------------------------------------------------------------------------------
-double BruteForce(MyGraph* g) {
+double BruteForce(MyGraph* g, int* &path) {
   double resp = -1.0;
   int size = g->getVertexNum();
   std::queue<execInstance> exec;
 
   // inicializa a fila de execucao
-  for(int i = 0; i < size; i++) {
-    exec.push(execInstance(size));
-    exec.back().act = 1;
-    exec.back().visited[i] = true;
-    exec.back().path[0] = i;
-  }
+  exec.push(execInstance(size));
+  exec.back().act = 1;
+  exec.back().visited[0] = true;
+  exec.back().path[0] = 0;
 
   while(!exec.empty()) {
     execInstance act = exec.front();
@@ -58,9 +56,12 @@ double BruteForce(MyGraph* g) {
 
     if(act.act < size) {
       for(int i = 0 ; i < size; i++) {
-        if(i != act.path[act.act-1] && act.visited[i] == false) {
+        if(act.visited[i] == false) {
           execInstance copy = act;
-          copy.sum = g->getEdge(i, copy.path[copy.act-1]);
+          double weight =  g->getEdge(i, copy.path[copy.act-1]);
+          weight = (weight != -1) ? weight : 0; // checka se existe aresta
+
+          copy.sum = copy.sum + weight;
           copy.visited[i] = true;
           copy.path[copy.act] = i;
           copy.act++;
@@ -81,10 +82,10 @@ double BruteForce(MyGraph* g) {
 //------------------------------------------------------------------------------
 // print: Metodo para mostrar a resposta no formato pedido
 //------------------------------------------------------------------------------
-void print(MyGraph* g, double resp) {
+void print(MyGraph* g, double resp, int* path) {
   printf("%.2f\n", resp);
   for(int i = 0; i < g->getVertexNum(); i++)
-    printf("%d ", path[i]);
+    printf("%d ", (path[i]+1));
   printf("\n");
 }
 
@@ -92,12 +93,12 @@ void print(MyGraph* g, double resp) {
 // METODO PRINCIPAL
 //------------------------------------------------------------------------------
 int main() {
-  path = new int[100];
+  int* path = new int[100];
   MyGraph* g = new MyGraph();
   read_and_construct(g);
 
-  double resp = BruteForce(g);
-  print(g, resp);
+  double resp = BruteForce(g, path);
+  print(g, resp, path);
 
   delete path;
   return 0;
