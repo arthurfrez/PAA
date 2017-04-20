@@ -3,32 +3,17 @@
 #include <vector>
 #include <queue>
 
-//=====================================================================
-// STRUCT DE INSTANCIA DA EXECUCAO DA FILA
-//=====================================================================
-struct execInstance {
-  int act;
-  double sum;
-  std::vector<bool> visited;
-  int path[100];
-
-  // Construtor
-  execInstance(int n) {
-    sum = 0.0;
-    act = 0;
-
-    std::vector<bool> v(n, false);
-    visited = v;
-  }
-};
-
 //------------------------------------------------------------------------------
 // BruteForce: solucao usando forca bruta
 //------------------------------------------------------------------------------
 double BruteForce(MyGraph* g, int* &path) {
+  int act = 0;
+  double sum 0.0;
   double resp = 10000000.0;
   int size = g->getVertexNum();
   std::queue<execInstance> exec;
+  std::vector<bool> visited(size, false);
+  int path[100];
 
   // inicializa a fila de execucao
   exec.push(execInstance(size));
