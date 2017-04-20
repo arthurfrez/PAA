@@ -4,7 +4,7 @@
 #include <queue>
 
 //=====================================================================
-// STRUCT DE INSTANCIA DA EXECUCAO DA FILE
+// STRUCT DE INSTANCIA DA EXECUCAO DA FILA
 //=====================================================================
 struct execInstance {
   int act;
