@@ -6,6 +6,7 @@
 // REF: http://www.geeksforgeeks.org/branch-bound-set-5-traveling-salesman-problem/
 // REF: http://stackoverflow.com/questions/22985590/calculating-the-held-karp-lower-bound-for-the-traveling-salesmantsp
 // REF: http://lcm.csa.iisc.ernet.in/dsa/node187.html
+// REF: https://github.com/karepker/little-tsp
 
 //=====================================================================
 // STRUCT DE INSTANCIA DA EXECUCAO DA FILA

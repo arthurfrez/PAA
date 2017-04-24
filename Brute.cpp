@@ -4,19 +4,23 @@
 #include <queue>
 
 // REF: https://github.com/samlbest/traveling-salesman
-// REF: https://github.com/karepker/little-tsp
+// CLASS-LESS HEADER
+
 
 //------------------------------------------------------------------------------
 // Depth_First_Search: busca em profundidade
 //------------------------------------------------------------------------------
-double Depth_First_Search(MyGraph*g, int ver, int size, int act, std::vector<bool> visited, int* &path, double &resp, double &sum) {
+double Depth_First_Search(MyGraph*g, int ver, int size, int act, std::vector<bool> visited, int* &path, double &resp, double sum) {
   visited[ver] = true;
   path[act] = ver;
-  if(act != 0 && g->getEdge(path[act-1], ver) != -1) sum = sum + g->getEdge(path[act-1], ver);
+  if(act != 0 && path[act-1] != ver) sum = sum + g->getEdge(path[act-1], ver);
   act++;
 
-  //printf("So testando: Sum: %f   Resp: %f\n", sum, resp);
-  //printf("Outro Teste, act: %i   ver: %i\n", (act-1), ver);
+  /*if(path[act-1] != 0) {
+    printf("So testando: Sum: %f   Resp: %f   ", sum, resp);
+    printf("act: %i   ", act);
+    printf("%i -> %i\n", path[act-2], ver);
+  }*/
 
   if(act >= size)
     if(sum < resp)
