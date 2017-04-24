@@ -3,51 +3,42 @@
 #include <vector>
 #include <queue>
 
+// REF: https://github.com/samlbest/traveling-salesman
+// REF: https://github.com/karepker/little-tsp
+
+//------------------------------------------------------------------------------
+// Depth_First_Search: busca em profundidade
+//------------------------------------------------------------------------------
+double Depth_First_Search(MyGraph*g, int ver, int size, int act, std::vector<bool> visited, int* &path, double &resp, double &sum) {
+  visited[ver] = true;
+  path[act] = ver;
+  if(act != 0 && g->getEdge(path[act-1], ver) != -1) sum = sum + g->getEdge(path[act-1], ver);
+  act++;
+
+  //printf("So testando: Sum: %f   Resp: %f\n", sum, resp);
+  //printf("Outro Teste, act: %i   ver: %i\n", (act-1), ver);
+
+  if(act >= size)
+    if(sum < resp)
+      resp = sum;
+
+  for(int i = 1; i < size; i++)
+    if(!visited[i]) Depth_First_Search(g, i, size, act, visited, path, resp, sum);
+
+  return resp;
+}
+
 //------------------------------------------------------------------------------
 // BruteForce: solucao usando forca bruta
 //------------------------------------------------------------------------------
 double BruteForce(MyGraph* g, int* &path) {
   int act = 0;
-  double sum 0.0;
+  double sum = 0.0;
   double resp = 10000000.0;
   int size = g->getVertexNum();
-  std::queue<execInstance> exec;
   std::vector<bool> visited(size, false);
-  int path[100];
 
-  // inicializa a fila de execucao
-  exec.push(execInstance(size));
-  exec.back().act = 1;
-  exec.back().visited[0] = true;
-  exec.back().path[0] = 0;
-
-  while(!exec.empty()) {
-    execInstance act = exec.front();
-    exec.pop();
-
-    if(act.act < size) {
-      for(int i = 0 ; i < size; i++) {
-        if(act.visited[i] == false) {
-          execInstance copy = act;
-          double weight =  g->getEdge(i, copy.path[copy.act-1]);
-          weight = (weight != -1) ? weight : 0; // checka se existe aresta
-
-          copy.sum = copy.sum + weight;
-          copy.visited[i] = true;
-          copy.path[copy.act] = i;
-          copy.act++;
-
-          exec.push(copy);
-        }
-      }
-    }
-    else if((act.sum + g->getEdge(act.path[size-1], 0)) < resp) {
-      resp = act.sum + g->getEdge(act.path[size-1], 0);
-      path = act.path;
-    }
-  }
-
-  return resp;
+  return Depth_First_Search(g, 0, size, act, visited, path, resp, sum);
 }
 
 //------------------------------------------------------------------------------
