@@ -6,25 +6,31 @@
 // REF: https://github.com/samlbest/traveling-salesman
 // CLASS-LESS HEADER
 
+int* final_Path;
+
+//------------------------------------------------------------------------------
+// copyPointer: copia o array
+//------------------------------------------------------------------------------
+void copyPointer(int size, int* base) {
+  for(int i = 0; i < size; i++) final_Path[i] = base[i];
+}
 
 //------------------------------------------------------------------------------
 // Depth_First_Search: busca em profundidade
 //------------------------------------------------------------------------------
-double Depth_First_Search(MyGraph*g, int ver, int size, int act, std::vector<bool> visited, int* &path, double &resp, double sum) {
+double Depth_First_Search(MyGraph*g, int ver, int size, int act, std::vector<bool> visited, int* path, double &resp, double sum) {
   visited[ver] = true;
   path[act] = ver;
   if(act != 0 && path[act-1] != ver) sum = sum + g->getEdge(path[act-1], ver);
   act++;
 
-  /*if(path[act-1] != 0) {
-    printf("So testando: Sum: %f   Resp: %f   ", sum, resp);
-    printf("act: %i   ", act);
-    printf("%i -> %i\n", path[act-2], ver);
-  }*/
-
-  if(act >= size)
-    if(sum < resp)
-      resp = sum;
+  if(act >= size) {
+    double fin = sum + g->getEdge(path[act-1], 0);
+    if(fin < resp) {
+      resp = fin;
+      copyPointer(size, path);
+    }
+  }
 
   for(int i = 1; i < size; i++)
     if(!visited[i]) Depth_First_Search(g, i, size, act, visited, path, resp, sum);
@@ -65,7 +71,7 @@ void read_and_construct(MyGraph* g) {
 void print(MyGraph* g, double resp, int* path) {
   printf("%.2f\n", resp);
   for(int i = 0; i < g->getVertexNum(); i++)
-    printf("%d ", (path[i]+1));
+    printf("%d ", (final_Path[i]+1));
   printf("\n");
 }
 
@@ -74,6 +80,7 @@ void print(MyGraph* g, double resp, int* path) {
 //------------------------------------------------------------------------------
 int main() {
   int* path = new int[100];
+  final_Path = new int[100];
   MyGraph* g = new MyGraph();
   read_and_construct(g);
 
