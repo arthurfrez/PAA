@@ -1,19 +1,24 @@
+/***********************************************************************
+*	Arthur Floresta Rezende
+* MYGraph.cpp - Implementacao da classe MyGraph
+*
+* Implementacao de um grafo simples para solucao do
+* Problema do Caixeiro Viajante (em ingles: TSP)
+***********************************************************************/
+
+//=====================================================================
+// BIBLIOTECAS
+//=====================================================================
 #include "MyGraph.h"
 #include <cstdio>
 #include <cmath>
 
-//=====================================================================
-// DEFINICAO DE CONSTANTES
-//=====================================================================
-#define MAX_CITY 100
-#define MAX_COORDENATES 1000
-#define NULL_VAL -1
 
 //------------------------------------------------------------------------------
 // calculateDistance: calcula a distancia entre dois pontos
 //------------------------------------------------------------------------------
 double calculateDistance(int v1c1, int v1c2, int v2c1, int v2c2) {
-  return sqrt(pow((double)(v2c1-v1c1), 2.0) + pow((double)(v2c2, v1c2), 2.0));
+  return sqrt(pow((double)(v2c1-v1c1), 2.0) + pow((double)(v2c2-v1c2), 2.0));
 }
 
 //------------------------------------------------------------------------------
@@ -110,7 +115,7 @@ void MyGraph::constructGraph(int n, int coor[][MAX_CITY]) {
 void MyGraph::printGraph() {
   for(int i = 0; i < vertex_n; i++) {
     for(int j = 0; j < vertex_n; j++) {
-      if(getEdge(i, j) != NULL_VAL) printf("%f\t", getEdge(i, j));
+      if(getEdge(i, j) != NULL_VAL) printf("%0.2f\t", getEdge(i, j));
       else printf("-\t");
     }
     printf("\n");

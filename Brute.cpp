@@ -3,66 +3,52 @@
 #include <vector>
 #include <queue>
 
-//=====================================================================
-// STRUCT DE INSTANCIA DA EXECUCAO DA FILA
-//=====================================================================
-struct execInstance {
-  int act;
-  double sum;
-  std::vector<bool> visited;
-  int path[100];
+// REF: https://github.com/samlbest/traveling-salesman
+// CLASS-LESS HEADER
 
-  // Construtor
-  execInstance(int n) {
-    sum = 0.0;
-    act = 0;
+int* final_Path;
 
-    std::vector<bool> v(n, false);
-    visited = v;
+//------------------------------------------------------------------------------
+// copyPointer: copia o array
+//------------------------------------------------------------------------------
+void copyPointer(int size, int* base) {
+  for(int i = 0; i < size; i++) final_Path[i] = base[i];
+}
+
+//------------------------------------------------------------------------------
+// Depth_First_Search: busca em profundidade
+//------------------------------------------------------------------------------
+double Depth_First_Search(MyGraph*g, int ver, int size, int act, std::vector<bool> visited, int* path, double &resp, double sum) {
+  visited[ver] = true;
+  path[act] = ver;
+  if(act != 0 && path[act-1] != ver) sum = sum + g->getEdge(path[act-1], ver);
+  act++;
+
+  if(act >= size) {
+    double fin = sum + g->getEdge(path[act-1], 0);
+    if(fin < resp) {
+      resp = fin;
+      copyPointer(size, path);
+    }
   }
-};
+
+  for(int i = 1; i < size; i++)
+    if(!visited[i]) Depth_First_Search(g, i, size, act, visited, path, resp, sum);
+
+  return resp;
+}
 
 //------------------------------------------------------------------------------
 // BruteForce: solucao usando forca bruta
 //------------------------------------------------------------------------------
 double BruteForce(MyGraph* g, int* &path) {
+  int act = 0;
+  double sum = 0.0;
   double resp = 10000000.0;
   int size = g->getVertexNum();
-  std::queue<execInstance> exec;
+  std::vector<bool> visited(size, false);
 
-  // inicializa a fila de execucao
-  exec.push(execInstance(size));
-  exec.back().act = 1;
-  exec.back().visited[0] = true;
-  exec.back().path[0] = 0;
-
-  while(!exec.empty()) {
-    execInstance act = exec.front();
-    exec.pop();
-
-    if(act.act < size) {
-      for(int i = 0 ; i < size; i++) {
-        if(act.visited[i] == false) {
-          execInstance copy = act;
-          double weight =  g->getEdge(i, copy.path[copy.act-1]);
-          weight = (weight != -1) ? weight : 0; // checka se existe aresta
-
-          copy.sum = copy.sum + weight;
-          copy.visited[i] = true;
-          copy.path[copy.act] = i;
-          copy.act++;
-
-          exec.push(copy);
-        }
-      }
-    }
-    else if((act.sum + g->getEdge(act.path[size-1], 0)) < resp) {
-      resp = act.sum + g->getEdge(act.path[size-1], 0);
-      path = act.path;
-    }
-  }
-
-  return resp;
+  return Depth_First_Search(g, 0, size, act, visited, path, resp, sum);
 }
 
 //------------------------------------------------------------------------------
@@ -85,7 +71,7 @@ void read_and_construct(MyGraph* g) {
 void print(MyGraph* g, double resp, int* path) {
   printf("%.2f\n", resp);
   for(int i = 0; i < g->getVertexNum(); i++)
-    printf("%d ", (path[i]+1));
+    printf("%d ", (final_Path[i]+1));
   printf("\n");
 }
 
@@ -94,6 +80,7 @@ void print(MyGraph* g, double resp, int* path) {
 //------------------------------------------------------------------------------
 int main() {
   int* path = new int[100];
+  final_Path = new int[100];
   MyGraph* g = new MyGraph();
   read_and_construct(g);
 
