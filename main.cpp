@@ -1,11 +1,8 @@
-#include "MyGraph.h"
-#include <ctdio>
-
-// REF: http://www.theprojectspot.com/tutorial-post/applying-a-genetic-algorithm-to-the-travelling-salesman-problem/5
-
-double GeneticAlgorithm(MyGraph* g, int* &path) {
-  return 0.0;
-}
+#include "MyGraph.hpp"
+#include "Brute.hpp"
+#include "BranchBound.hpp"
+#include "Genetic.hpp"
+#include <cstdio>
 
 //------------------------------------------------------------------------------
 // read_and_construct: metodo para ler entrada e montar o grafo
@@ -31,14 +28,15 @@ void print(MyGraph* g, double resp, int* path) {
   printf("\n");
 }
 
-
-
+//------------------------------------------------------------------------------
+// METODO PRINCIPAL
+//------------------------------------------------------------------------------
 int main() {
   int* path = new int[100];
   MyGraph* g = new MyGraph();
   read_and_construct(g);
 
-  double resp = GeneticAlgorithm(g, path);
+  double resp = BruteForce(g, path);
   print(g, resp, path);
 
   delete path;
