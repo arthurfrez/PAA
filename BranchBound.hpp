@@ -8,25 +8,6 @@
 // REF: http://lcm.csa.iisc.ernet.in/dsa/node187.html
 // REF: https://github.com/karepker/little-tsp
 
-//=====================================================================
-// STRUCT DE INSTANCIA DA EXECUCAO DA FILA
-//=====================================================================
-struct execInstance {
-  int act;
-  double sum;
-  std::vector<bool> visited;
-  int path[100];
-
-  // Construtor
-  execInstance(int n) {
-    sum = 0.0;
-    act = 0;
-
-    std::vector<bool> v(n, false);
-    visited = v;
-  }
-};
-
 //------------------------------------------------------------------------------
 // minimal_edge_sum: soma das 2 menores arestas do vertice v
 //------------------------------------------------------------------------------
@@ -62,26 +43,8 @@ double Branch_and_Bound(MyGraph* g, int* &path) {
   double resp = 10000000.0;
   double bound = initialBound(g);
   int size = g->getVertexNum();
-  std::queue<execInstance> exec;
 
-  // inicializa a fila de execucao
-  exec.push(execInstance(size));
-  exec.back().act = 1;
-  exec.back().visited[0] = true;
-  exec.back().path[0] = 0;
-
-  while(!exec.empty()) {
-    execInstance act = exec.front();
-    exec.pop();
-
-    if(act.act < size) {
-
-    }
-    else if((act.sum + g->getEdge(act.path[size-1], 0)) < resp) {
-      resp = act.sum + g->getEdge(act.path[size-1], 0);
-      path = act.path;
-    }
-  }
+  for();
 
   return resp;
 }
