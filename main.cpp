@@ -1,5 +1,7 @@
 #include "MyGraph.hpp"
 #include "Brute.hpp"
+#include "BranchBound.hpp"
+#include "Genetic.hpp"
 #include <cstdio>
 
 //------------------------------------------------------------------------------
