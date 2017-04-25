@@ -1,6 +1,6 @@
 /***********************************************************************
 *	Arthur Floresta Rezende
-* MYGraph.h - Header da classe MyGraph
+* MYGraph.hpp - Header da classe MyGraph
 *
 * Implementacao de um grafo simples para solucao do
 * Problema do Caixeiro Viajante (em ingles: TSP)
