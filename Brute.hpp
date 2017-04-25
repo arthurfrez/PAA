@@ -33,7 +33,7 @@ void copyArray(int size, int* base, int* &p) {
 //    Resposta: resp
 //    Soma atual: sum
 //------------------------------------------------------------------------------
-double Depth_First_Search(MyGraph*g, int ver, int act,
+void Depth_First_Search(MyGraph* g, int ver, int act,
     std::vector<bool> visited, int* tmp_path, int* &path,
     double &resp, double sum) {
 
@@ -55,19 +55,20 @@ double Depth_First_Search(MyGraph*g, int ver, int act,
   for(int i = 1; i < g->getVertexNum(); i++)
     if(!visited[i])
       Depth_First_Search(g, i, act, visited, tmp_path, path, resp, sum);
-
-  return resp;
 }
 
 //------------------------------------------------------------------------------
 // BruteForce: solucao usando forca bruta
 //------------------------------------------------------------------------------
-double BruteForce(MyGraph* g, int* &path) {
+double BruteForce(MyGraph* g, int path[100]) {
   int act = 0;
   double sum = 0.0;
   double resp = 10000000.0;
   std::vector<bool> visited(g->getVertexNum(), false);
   int* tmp_path = new int[g->getVertexNum()];
 
-  return Depth_First_Search(g, 0, act, visited, tmp_path, path, resp, sum);
+  Depth_First_Search(g, 0, act, visited, tmp_path, path, resp, sum);
+
+  delete tmp_path;
+  return resp;
 }

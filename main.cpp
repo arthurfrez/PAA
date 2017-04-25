@@ -32,7 +32,7 @@ void print(MyGraph* g, double resp, int* path) {
 // METODO PRINCIPAL
 //------------------------------------------------------------------------------
 int main() {
-  int* path = new int[100];
+  int path[100];
   MyGraph* g = new MyGraph();
   read_and_construct(g);
 
@@ -41,6 +41,5 @@ int main() {
   //double resp = GeneticAlgorithm(g, path);
   print(g, resp, path);
 
-  delete path;
   return 0;
 }

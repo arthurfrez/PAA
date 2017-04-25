@@ -36,6 +36,15 @@ double initialBound(MyGraph* g) {
   return firstBound/2;
 }
 
+/*void buscaEmLargura(MyGraph* g, int init, std::vector<bool> visited) {
+	queue<vector<int>> q;
+
+  while (!q.empty()) {
+
+    q.pop();
+  }
+}*/
+
 //------------------------------------------------------------------------------
 // Branch_and_BoundÇ solucao usando branch and bound
 //------------------------------------------------------------------------------
@@ -44,7 +53,7 @@ double Branch_and_Bound(MyGraph* g, int* &path) {
   double bound = initialBound(g);
   int size = g->getVertexNum();
 
-  for();
+  //for();
 
   return resp;
 }
