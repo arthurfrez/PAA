@@ -32,12 +32,12 @@ void print(MyGraph* g, double resp, int* path) {
 // METODO PRINCIPAL
 //------------------------------------------------------------------------------
 int main() {
-  int path[100];
+  int* path = new int[100];
   MyGraph* g = new MyGraph();
   read_and_construct(g);
 
-  double resp = BruteForce(g, path);
-  //double resp = Branch_and_Bound(g, path);
+  //double resp = BruteForce(g, path);
+  double resp = Branch_and_Bound(g, path);
   //double resp = GeneticAlgorithm(g, path);
   print(g, resp, path);
 
