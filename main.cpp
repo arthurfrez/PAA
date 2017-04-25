@@ -1,5 +1,5 @@
 #include "MyGraph.hpp"
-#include "Solutions.hpp"
+#include "Brute.hpp"
 #include <cstdio>
 
 //------------------------------------------------------------------------------
@@ -22,7 +22,7 @@ void read_and_construct(MyGraph* g) {
 void print(MyGraph* g, double resp, int* path) {
   printf("%.2f\n", resp);
   for(int i = 0; i < g->getVertexNum(); i++)
-    printf("%d ", (final_Path[i]+1));
+    printf("%d ", (path[i]+1));
   printf("\n");
 }
 
@@ -34,7 +34,7 @@ int main() {
   MyGraph* g = new MyGraph();
   read_and_construct(g);
 
-  //double resp = BruteForce(g, path);
+  double resp = BruteForce(g, path);
   print(g, resp, path);
 
   delete path;
