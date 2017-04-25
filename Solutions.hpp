@@ -1,10 +1,6 @@
 #include "MyGraph.hpp"
 #include <cstdio>
 #include <vector>
-#include <queue>
-
-// REF: https://github.com/samlbest/traveling-salesman
-// CLASS-LESS HEADER
 
 int* final_Path;
 
