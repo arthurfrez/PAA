@@ -60,6 +60,7 @@ double initialBound(MyGraph* g) {
 //    Caminho final: path
 //    Resposta: resp
 //    Soma atual: sum
+//    Valor do bound atual: bound
 //------------------------------------------------------------------------------
 void Depth_First_Search(MyGraph* g, int ver, int act,
     std::vector<bool> visited, int* tmp_path, int* &path,
