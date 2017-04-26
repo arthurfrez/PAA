@@ -1,12 +1,17 @@
+/***********************************************************************
+*	Arthur Floresta Rezende
+* BranchBound.hpp - Metodo de Branch and Bound
+*
+* Implementacao do metodo de branch and bound para solucao
+* do Problema do Caixeiro Viajante (em ingles: TSP)
+***********************************************************************/
+
+//=====================================================================
+// BIBLIOTECAS
+//=====================================================================
 #include "MyGraph.hpp"
 #include <cstdio>
 #include <vector>
-#include <queue>
-
-// REF: http://www.geeksforgeeks.org/branch-bound-set-5-traveling-salesman-problem/
-// REF: http://stackoverflow.com/questions/22985590/calculating-the-held-karp-lower-bound-for-the-traveling-salesmantsp
-// REF: http://lcm.csa.iisc.ernet.in/dsa/node187.html
-// REF: https://github.com/karepker/little-tsp
 
 //------------------------------------------------------------------------------
 // minimal_edge_sum: soma das 2 menores arestas do vertice v
@@ -17,11 +22,15 @@ double minimal_edge_sum(double* edges, int n) {
 
 
   for(int i = 0; i < n; i++) {
-    if(edges[i] != -1 && edges[i] < min) {
-      sec = min;
-      min = edges[i];
+    if(edges[i] != -1) {
+      if(edges[i] < min) {
+        sec = min;
+        min = edges[i];
+      }
+      else if(edges[i] < sec) {
+        sec = edges[i];
+      }
     }
-    else if(edges[i] < sec) sec = edges[i];
   }
 
   return min + sec;
@@ -77,11 +86,11 @@ void Depth_First_Search(MyGraph* g, int ver, int act,
 
   for(int i = 1; i < g->getVertexNum(); i++)
     if(!visited[i])
-      Depth_First_Search(g, i, act, visited, tmp_path, path, resp, sum);
+      Depth_First_Search(g, i, act, visited, tmp_path, path, resp, sum, bound);
 }
 
 //------------------------------------------------------------------------------
-// Branch_and_BoundÇ solucao usando branch and bound
+// Branch_and_Bound solucao usando branch and bound
 //------------------------------------------------------------------------------
 double Branch_and_Bound(MyGraph* g, int* &path) {
   int act = 0;
@@ -90,8 +99,6 @@ double Branch_and_Bound(MyGraph* g, int* &path) {
   std::vector<bool> visited(g->getVertexNum(), false);
   int* tmp_path = new int[g->getVertexNum()];
   double bound = initialBound(g);
-
-  printf("initial Bound: %f\n", bound);
 
   Depth_First_Search(g, 0, act, visited, tmp_path, path, resp, sum, bound);
 
