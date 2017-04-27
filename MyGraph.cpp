@@ -17,8 +17,8 @@
 //------------------------------------------------------------------------------
 // calculateDistance: calcula a distancia entre dois pontos
 //------------------------------------------------------------------------------
-double calculateDistance(int v1c1, int v1c2, int v2c1, int v2c2) {
-  return sqrt(pow((double)(v2c1-v1c1), 2.0) + pow((double)(v2c2-v1c2), 2.0));
+double calculateDistance(double v1c1, double v1c2, double v2c1, double v2c2) {
+  return sqrt(pow((v2c1-v1c1), 2.0) + pow((v2c2-v1c2), 2.0));
 }
 
 //------------------------------------------------------------------------------
@@ -96,7 +96,7 @@ void MyGraph::nullifyEdge(int v1, int v2) { matrix[v1][v2] = NULL_VAL; }
 //------------------------------------------------------------------------------
 //  constructGraph: constroi o grafo
 //------------------------------------------------------------------------------
-void MyGraph::constructGraph(int n, int coor[][MAX_CITY]) {
+void MyGraph::constructGraph(int n, double coor[][MAX_CITY]) {
   vertex_n = n;
   for(int i = 0; i < n; i++) {
     nullifyEdge(i, i);

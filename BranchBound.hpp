@@ -91,7 +91,7 @@ void Depth_First_Search(MyGraph* g, int ver, int act,
 }
 
 //------------------------------------------------------------------------------
-// Branch_and_Bound solucao usando branch and bound
+// Branch_and_Bound: solucao usando branch and bound
 //------------------------------------------------------------------------------
 double Branch_and_Bound(MyGraph* g, int* &path) {
   int act = 0;

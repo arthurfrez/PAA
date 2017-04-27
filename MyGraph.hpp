@@ -20,7 +20,7 @@ public:
 	MyGraph(); // Construtor
 	int getVertexNum(); // Get numero de vertices
 	int getEdgeNum(); // Get numero de arestas
-	void constructGraph(int n, int coor[MAX_CITY][MAX_CITY]); // Constroi o grafo
+	void constructGraph(int n, double coor[MAX_CITY][MAX_CITY]); // Constroi o grafo
 	void printGraph(); // Imprime o grafo
 	double getEdge(int v1, int v2); // Get aresta
 	double* get_all_edges(int v); // Get vetor de arestas do vertice
