@@ -37,8 +37,8 @@ int main() {
   read_and_construct(g);
 
   //double resp = BruteForce(g, path);
-  double resp = Branch_and_Bound(g, path);
-  //double resp = GeneticAlgorithm(g, path);
+  //double resp = Branch_and_Bound(g, path);
+  double resp = GeneticAlgorithm(g, path);
   print(g, resp, path);
 
   return 0;
