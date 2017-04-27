@@ -8,12 +8,12 @@
 // read_and_construct: metodo para ler entrada e montar o grafo
 //------------------------------------------------------------------------------
 void read_and_construct(MyGraph* g) {
-  int coords[2][100];
+  double coords[2][100];
   int n;
   scanf("%i", &n);
 
   for(int i = 0; i < n; i++)
-    scanf("%i %i", &coords[0][i], &coords[1][i]);
+    scanf("%lf %lf", &coords[0][i], &coords[1][i]);
 
   g->constructGraph(n, coords);
 }
