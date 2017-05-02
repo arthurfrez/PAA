@@ -21,7 +21,8 @@
 // REF: http://www.theprojectspot.com/tutorial-post/applying-a-genetic-algorithm-to-the-travelling-salesman-problem/5
 // REF: https://www.vivaolinux.com.br/script/Um-algoritmo-genetico-para-o-TSP-(Travel-Salesman-Problem)
 
-int* generate_random_path(int size); //foward declaration
+int* generate_random_path(int); // prototipo da funcao
+MyGraph* graph;
 
 //=====================================================================
 // STRUCT DO INDIVIDUO
@@ -29,9 +30,16 @@ int* generate_random_path(int size); //foward declaration
 struct individual {
   int p_size; // tamanho do caminho
   int path[MAX_CITY]; // caminho
-  double finess; // aptdao do individuo
+  double fitness; // aptdao do individuo
   bool state; // estado atual (modificado ou nao na populacao atual)
+  void calculate_fitness();
 };
+
+// boo
+void individual::calculate_fitness() {
+  fitness = 0.0;
+  for(int i = 1; i < p_size; i++) fitness += graph->getEdge(path[i], path[i-1]);
+}
 
 //------------------------------------------------------------------------------
 // random_to_one: gera um numero pseudo aleatorio entre 0 e 1
@@ -53,6 +61,23 @@ int* generate_random_path(int size) {
     resp[i] = tmp[i];
 
   return resp;
+}
+
+//------------------------------------------------------------------------------
+// generate_pop: gera uma populacao
+//------------------------------------------------------------------------------
+void generate_pop(int size, int pop_size) {
+  int** population = new int* [pop_size];
+  for(int i = 0; i < pop_size; i++)
+    population[i] = generate_random_path(size);
+}
+
+//------------------------------------------------------------------------------
+// evolve_pop: evolui a populacao
+//------------------------------------------------------------------------------
+int** evolve_pop(int** oldPop, int size, int pop_size) {
+  int** newPop = new int* [pop_size];
+  newPop[0] = oldPop[0];
 }
 
 //------------------------------------------------------------------------------
@@ -108,6 +133,8 @@ double GeneticAlgorithm(MyGraph* g, int* &path) {
   srand(time(0));
   int size = g->getVertexNum();
   int* tmp_path = generate_random_path(size);
+
+  graph = g;
 
   delete tmp_path;
   return 0.0;
