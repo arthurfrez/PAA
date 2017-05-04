@@ -20,6 +20,7 @@
 
 // REF: http://www.theprojectspot.com/tutorial-post/applying-a-genetic-algorithm-to-the-travelling-salesman-problem/5
 // REF: https://www.vivaolinux.com.br/script/Um-algoritmo-genetico-para-o-TSP-(Travel-Salesman-Problem)
+// HEADER: http://www.umich.edu/~eecs381/handouts/CppHeaderFileGuidelines.pdf
 
 int* generate_random_path(int); // prototipo da funcao
 MyGraph* graph;
@@ -29,16 +30,18 @@ MyGraph* graph;
 //=====================================================================
 struct individual {
   int p_size; // tamanho do caminho
-  int path[MAX_CITY]; // caminho
+  int* path; // caminho
   double fitness; // aptdao do individuo
   bool state; // estado atual (modificado ou nao na populacao atual)
   void calculate_fitness();
+  ~individual() { delete path; }
 };
 
 // boo
 void individual::calculate_fitness() {
   fitness = 0.0;
-  for(int i = 1; i < p_size; i++) fitness += graph->getEdge(path[i], path[i-1]);
+  for(int i = 1; i < p_size; i++)
+    fitness += graph->getEdge(path[i], path[i-1]);
 }
 
 //------------------------------------------------------------------------------
@@ -67,17 +70,30 @@ int* generate_random_path(int size) {
 // generate_pop: gera uma populacao
 //------------------------------------------------------------------------------
 void generate_pop(int size, int pop_size) {
-  int** population = new int* [pop_size];
-  for(int i = 0; i < pop_size; i++)
-    population[i] = generate_random_path(size);
+  individual* population;
+
+  for(int i = 0; i < pop_size; i++) {
+    population[i].p_size = size;
+    population[i].path = generate_random_path(size);
+    population[i].calculate_fitness();
+  }
 }
 
 //------------------------------------------------------------------------------
-// evolve_pop: evolui a populacao
+// getFittest: acha a posicao do individuo mais adaptado
 //------------------------------------------------------------------------------
-int** evolve_pop(int** oldPop, int size, int pop_size) {
-  int** newPop = new int* [pop_size];
-  newPop[0] = oldPop[0];
+int getFittest(individual* pop, int p_size) {
+  double fit = 1000000.0;
+  int pos = -1;
+
+  for(int i = 0; i < p_size; i++) {
+    if(pop[i].fitness < fit) {
+      fit = pop[i].fitness;
+      pos = i;
+    }
+  }
+
+  return pos;
 }
 
 //------------------------------------------------------------------------------
@@ -110,7 +126,7 @@ individual crossover(individual parent1, individual parent2) {
 //------------------------------------------------------------------------------
 // mutate: gera mutacoes na populacao
 //------------------------------------------------------------------------------
-void mutate(individual ind) {
+void mutate(individual &ind) {
   double mutation_rate = 0.015; // frequencia da mutacao
 
   for(int i = 1; i < ind.p_size; i++) {
@@ -127,10 +143,38 @@ void mutate(individual ind) {
 }
 
 //------------------------------------------------------------------------------
+// tournamentSelection: seleciona individual usando selecao por torneio
+//------------------------------------------------------------------------------
+individual tournamentSelection(individual* pop, int p_size) {
+  individual* tournament = new individual[p_size];
+  for(int i = 0; i < p_size; i++)
+    tournament[i] = pop[rand() % p_size];
+
+    return tournament[getFittest(tournament, p_size)];
+}
+
+//------------------------------------------------------------------------------
+// evolve_pop: evolui a populacao, elitismo de 1 individuo
+//------------------------------------------------------------------------------
+individual* evolve_pop(individual* oldPop, int size, int p_size) {
+  individual* newPop;
+  newPop[0] = oldPop[getFittest(oldPop, p_size)]; // elitism
+
+  for(int i = 1; i < p_size; i++) {
+    individual parent1 = tournamentSelection(oldPop, p_size);
+    individual parent2 = tournamentSelection(oldPop, p_size);
+    individual child = crossover(parent1, parent2);
+    newPop[i] = child;
+  }
+
+  for(int i = 1; i < p_size; i++) mutate(newPop[i]);
+}
+
+//------------------------------------------------------------------------------
 // GeneticAlgorithm: solucao usando algoritmo genetico
 //------------------------------------------------------------------------------
 double GeneticAlgorithm(MyGraph* g, int* &path) {
-  srand(time(0));
+  srand(time(0)); // seed para aleatoriedade
   int size = g->getVertexNum();
   int* tmp_path = generate_random_path(size);
 
