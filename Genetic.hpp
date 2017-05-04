@@ -29,7 +29,7 @@ MyGraph* graph;
 // STRUCT DO INDIVIDUO
 //=====================================================================
 struct individual {
-  int p_size; // tamanho do caminho
+  int size; // tamanho do caminho
   int* path; // caminho
   double fitness; // aptdao do individuo
   bool state; // estado atual (modificado ou nao na populacao atual)
@@ -40,7 +40,7 @@ struct individual {
 // boo
 void individual::calculate_fitness() {
   fitness = 0.0;
-  for(int i = 1; i < p_size; i++)
+  for(int i = 1; i < size; i++)
     fitness += graph->getEdge(path[i], path[i-1]);
 }
 
@@ -69,14 +69,16 @@ int* generate_random_path(int size) {
 //------------------------------------------------------------------------------
 // generate_pop: gera uma populacao
 //------------------------------------------------------------------------------
-void generate_pop(int size, int pop_size) {
-  individual* population;
+individual* generate_pop(int size, int p_size) {
+  individual* population = new individual[p_size];
 
-  for(int i = 0; i < pop_size; i++) {
-    population[i].p_size = size;
+  for(int i = 0; i < p_size; i++) {
+    population[i].size = size;
     population[i].path = generate_random_path(size);
     population[i].calculate_fitness();
   }
+
+  return population;
 }
 
 //------------------------------------------------------------------------------
@@ -99,27 +101,31 @@ int getFittest(individual* pop, int p_size) {
 //------------------------------------------------------------------------------
 // crossover: mescla os parentes
 //------------------------------------------------------------------------------
-individual crossover(individual parent1, individual parent2) {
+individual crossover(individual parent1, individual parent2) { // ERRADO
   individual child;
-  int init_pos = (rand() % (parent1.p_size-1)) + 1;
-  int fin_pos = (rand() % (parent1.p_size-1)) + 1;
+  int init_pos = (rand() % (parent1.size-1)) + 1;
+  int fin_pos = (rand() % (parent1.size-1)) + 1;
 
+  printf("hue\n");
   if(init_pos > fin_pos) {
     int aux = fin_pos;
     fin_pos = init_pos;
     init_pos = aux;
   }
 
-  child.p_size = parent1.p_size;
+  child.size = parent1.size;
 
+  printf("huehue %i %i\n", init_pos, fin_pos);
   // parte to parente 1
   for(int i = init_pos; i < fin_pos; i++)
     child.path[i] = parent1.path[i];
 
+  printf("huehuehue\n");
   // parte do parente 2
   for(int i = 0; i < init_pos; i++)
     child.path[i] = parent2.path[i];
-  for(int i = fin_pos; i < child.p_size; i++)
+  printf("huezord\n");
+  for(int i = fin_pos; i < child.size; i++)
     child.path[i] = parent2.path[i];
 }
 
@@ -129,10 +135,10 @@ individual crossover(individual parent1, individual parent2) {
 void mutate(individual &ind) {
   double mutation_rate = 0.015; // frequencia da mutacao
 
-  for(int i = 1; i < ind.p_size; i++) {
+  for(int i = 1; i < ind.size; i++) {
     // indice de mutacao
     if(random_to_one() < mutation_rate) {
-      int pos = rand() % ind.p_size;
+      int pos = rand() % ind.size;
 
       // swap
       int aux = ind.path[pos];
@@ -157,13 +163,15 @@ individual tournamentSelection(individual* pop, int p_size) {
 // evolve_pop: evolui a populacao, elitismo de 1 individuo
 //------------------------------------------------------------------------------
 individual* evolve_pop(individual* oldPop, int size, int p_size) {
-  individual* newPop;
+  individual* newPop = new individual[p_size];
   newPop[0] = oldPop[getFittest(oldPop, p_size)]; // elitism
 
   for(int i = 1; i < p_size; i++) {
     individual parent1 = tournamentSelection(oldPop, p_size);
     individual parent2 = tournamentSelection(oldPop, p_size);
+    printf("hue\n");
     individual child = crossover(parent1, parent2);
+    printf("huehue\n");
     newPop[i] = child;
   }
 
@@ -176,10 +184,20 @@ individual* evolve_pop(individual* oldPop, int size, int p_size) {
 double GeneticAlgorithm(MyGraph* g, int* &path) {
   srand(time(0)); // seed para aleatoriedade
   int size = g->getVertexNum();
-  int* tmp_path = generate_random_path(size);
-
+  int p_size = 50;
   graph = g;
 
-  delete tmp_path;
-  return 0.0;
+  individual* pop = generate_pop(size, p_size);
+  for(int i = 0; i < 100; i++) {
+    printf("ORA x%i\n", (i+1));
+    evolve_pop(pop, size, p_size);
+  }
+
+  printf("haha\n");
+
+  individual resp = pop[getFittest(pop, p_size)];
+
+  delete pop;
+  delete graph;
+  return resp.fitness;
 }
