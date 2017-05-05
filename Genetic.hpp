@@ -17,6 +17,8 @@
 #include <time.h>
 
 #define MAX_CITY 100
+#define POPULATION_SIZE 50
+#define EVOLUTION_NUM 100
 
 // REF: http://www.theprojectspot.com/tutorial-post/applying-a-genetic-algorithm-to-the-travelling-salesman-problem/5
 // REF: https://www.vivaolinux.com.br/script/Um-algoritmo-genetico-para-o-TSP-(Travel-Salesman-Problem)
@@ -30,7 +32,7 @@ MyGraph* graph;
 //=====================================================================
 struct individual {
   int size; // tamanho do caminho
-  int path[100]; // caminho
+  int path[MAX_CITY]; // caminho
   double fitness; // aptdao do individuo
   void calculate_fitness();
 
@@ -44,6 +46,7 @@ void individual::calculate_fitness() {
   fitness = 0.0;
   for(int i = 1; i < size; i++)
     fitness += graph->getEdge(path[i], path[i-1]);
+  fitness += graph->getEdge(path[size-1], 0);
 }
 individual::individual() {  }
 individual::individual(individual * ind) {
@@ -62,7 +65,7 @@ double random_to_one() { return rand() / (RAND_MAX + 1.0); }
 //------------------------------------------------------------------------------
 // generate_random_path: gera um caminho aleatorio
 //------------------------------------------------------------------------------
-void generate_random_path(int size, int path[100]) {
+void generate_random_path(int size, int path[MAX_CITY]) {
   std::vector<int> tmp(size);
 
   for(int i = 0; i < size; i++) tmp[i] = i; // gerando array sequencial
@@ -189,18 +192,19 @@ individual* evolve_pop(individual* oldPop, int size, int p_size) {
 double GeneticAlgorithm(MyGraph* g, int* &path) {
   srand(time(0)); // seed para aleatoriedade
   int size = g->getVertexNum();
-  int p_size = 50;
+  int p_size = POPULATION_SIZE;
   graph = g;
 
   individual* pop = generate_pop(size, p_size);
-  for(int i = 0; i < 100; i++) {
+  for(int i = 0; i < EVOLUTION_NUM; i++) {
     evolve_pop(pop, size, p_size);
   }
 
   individual ind = pop[getFittest(pop, p_size)];
-  double resp = ind.fitness + g->getEdge(ind.path[size-1], 0);
-  path = ind.path;
+  double resp = ind.fitness;
 
+  path = new int[MAX_CITY];
+  for(int i = 0; i < size; i++)path[i] = ind.path[i];
 
   delete pop;
   return resp;
