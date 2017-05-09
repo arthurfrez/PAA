@@ -6,6 +6,8 @@
 * do Problema do Caixeiro Viajante (em ingles: TSP)
 ***********************************************************************/
 
+// REF: http://lcm.csa.iisc.ernet.in/dsa/node187.html
+
 //=====================================================================
 // BIBLIOTECAS
 //=====================================================================
@@ -64,7 +66,7 @@ double initialBound(MyGraph* g) {
 //------------------------------------------------------------------------------
 void Depth_First_Search(MyGraph* g, int ver, int act,
     std::vector<bool> visited, int* tmp_path, int* &path,
-    double &resp, double sum, double bound) {
+    double &resp, double sum, double &bound) {
 
   visited[ver] = true;
   tmp_path[act] = ver;
@@ -78,6 +80,7 @@ void Depth_First_Search(MyGraph* g, int ver, int act,
 
   if(act >= g->getVertexNum()) {
     double fin = sum + g->getEdge(tmp_path[act-1], 0);
+
     if(fin < resp) {
       resp = fin;
       copyArray(g->getVertexNum(), tmp_path, path);
