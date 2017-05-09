@@ -19,9 +19,13 @@
 #define MAX_CITY 100
 #define POPULATION_SIZE 50
 #define EVOLUTION_NUM 100
+#define TOURNAMENT_SIZE 5
 
 // REF: http://www.theprojectspot.com/tutorial-post/applying-a-genetic-algorithm-to-the-travelling-salesman-problem/5
 // REF: https://www.vivaolinux.com.br/script/Um-algoritmo-genetico-para-o-TSP-(Travel-Salesman-Problem)
+// REF: https://github.com/parano/GeneticAlgorithm-TSP
+// REF: http://user.ceng.metu.edu.tr/~ucoluk/research/publications/tspnew.pdf
+// REF: http://stackoverflow.com/questions/1544055/%D0%A1rossover-operation-in-genetic-algorithm-for-tsp
 // HEADER: http://www.umich.edu/~eecs381/handouts/CppHeaderFileGuidelines.pdf
 
 int* generate_random_path(int); // prototipo da funcao
@@ -134,6 +138,7 @@ individual crossover(individual parent1, individual parent2) { // ERRADO
   for(int i = fin_pos; i < child.size; i++)
     child.path[i] = parent2.path[i];
 
+  child.calculate_fitness();
   return child;
 }
 
@@ -154,17 +159,19 @@ void mutate(individual &ind) {
       ind.path[i] = aux;
     }
   }
+
+  ind.calculate_fitness();
 }
 
 //------------------------------------------------------------------------------
 // tournamentSelection: seleciona individual usando selecao por torneio
 //------------------------------------------------------------------------------
 individual* tournamentSelection(individual* pop, int p_size) {
-  individual* tournament = new individual[p_size];
-  for(int i = 0; i < p_size; i++)
+  individual* tournament = new individual[TOURNAMENT_SIZE];
+  for(int i = 0; i < TOURNAMENT_SIZE; i++)
     tournament[i] = pop[rand() % p_size];
 
-  return &tournament[getFittest(tournament, p_size)];
+  return &tournament[getFittest(tournament, TOURNAMENT_SIZE)];
 }
 
 //------------------------------------------------------------------------------
@@ -173,8 +180,9 @@ individual* tournamentSelection(individual* pop, int p_size) {
 individual* evolve_pop(individual* oldPop, int size, int p_size) {
   individual* newPop = new individual[p_size];
   newPop[0] = oldPop[getFittest(oldPop, p_size)]; // elitism
+  newPop[1] = individual(newPop[0]);
 
-  for(int i = 1; i < p_size; i++) {
+  for(int i = 2; i < p_size; i++) {
     individual parent1 = individual(tournamentSelection(oldPop, p_size));
     individual parent2 = individual(tournamentSelection(oldPop, p_size));
     individual child = individual(crossover(parent1, parent2));
@@ -196,9 +204,8 @@ double GeneticAlgorithm(MyGraph* g, int* &path) {
   graph = g;
 
   individual* pop = generate_pop(size, p_size);
-  for(int i = 0; i < EVOLUTION_NUM; i++) {
+  for(int i = 0; i < EVOLUTION_NUM; i++)
     evolve_pop(pop, size, p_size);
-  }
 
   individual ind = pop[getFittest(pop, p_size)];
   double resp = ind.fitness;
