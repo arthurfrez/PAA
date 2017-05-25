@@ -16,17 +16,13 @@
 #include <stdlib.h>
 #include <time.h>
 
+//=====================================================================
+// CONSTANTES
+//=====================================================================
 #define MAX_CITY 100
 #define POPULATION_SIZE 50
 #define EVOLUTION_NUM 100
 #define TOURNAMENT_SIZE 5
-
-// REF: http://www.theprojectspot.com/tutorial-post/applying-a-genetic-algorithm-to-the-travelling-salesman-problem/5
-// REF: https://www.vivaolinux.com.br/script/Um-algoritmo-genetico-para-o-TSP-(Travel-Salesman-Problem)
-// REF: https://github.com/parano/GeneticAlgorithm-TSP
-// REF: http://user.ceng.metu.edu.tr/~ucoluk/research/publications/tspnew.pdf
-// REF: http://stackoverflow.com/questions/1544055/%D0%A1rossover-operation-in-genetic-algorithm-for-tsp
-// HEADER: http://www.umich.edu/~eecs381/handouts/CppHeaderFileGuidelines.pdf
 
 int* generate_random_path(int); // prototipo da funcao
 MyGraph* graph;

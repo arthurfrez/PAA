@@ -1,0 +1,17 @@
+Forca Bruta:
+Autoria Propria
+
+Branch and Bound:
+http://lcm.csa.iisc.ernet.in/dsa/node187.html
+http://axon.cs.byu.edu/~martinez/classes/312/Projects/TSP/TSP.html
+https://en.wikipedia.org/wiki/Travelling_salesman_problem
+
+Genetico:
+http://www.theprojectspot.com/tutorial-post/applying-a-genetic-algorithm-to-the-travelling-salesman-problem/5
+https://www.vivaolinux.com.br/script/Um-algoritmo-genetico-para-o-TSP-(Travel-Salesman-Problem)
+https://github.com/parano/GeneticAlgorithm-TSP
+http://user.ceng.metu.edu.tr/~ucoluk/research/publications/tspnew.pdf
+http://stackoverflow.com/questions/1544055/%D0%A1rossover-operation-in-genetic-algorithm-for-tsp
+
+Cidades para teste:
+https://people.sc.fsu.edu/~jburkardt/datasets/tsp/tsp.html
