@@ -23,45 +23,7 @@
 #define POPULATION_SIZE 50
 #define EVOLUTION_NUM 100
 #define TOURNAMENT_SIZE 5
-
-int* generate_random_path(int); // prototipo da funcao
 MyGraph* graph;
-
-//=====================================================================
-// STRUCT DO INDIVIDUO
-//=====================================================================
-struct individual {
-  int size; // tamanho do caminho
-  int path[MAX_CITY]; // caminho
-  double fitness; // aptdao do individuo
-  void calculate_fitness();
-
-  individual();
-  individual(individual*);
-};
-
-// boo
-void individual::calculate_fitness() {
-  fitness = 0.0;
-  for(int i = 1; i < size; i++)
-    fitness += graph->getEdge(path[i], path[i-1]);
-  fitness += graph->getEdge(path[size-1], 0);
-}
-individual::individual() {
-  size = -1;
-  fitness = -1.0;
-}
-individual::individual(individual * ind) {
-  size = ind->size;
-  fitness = ind->fitness;
-  for(int i = 0; i < size; i++)
-    path[i] = ind->path[i];
-}
-
-//------------------------------------------------------------------------------
-// random_to_one: gera um numero pseudo aleatorio entre 0 e 1
-//------------------------------------------------------------------------------
-double random_to_one() { return rand() / (RAND_MAX + 1.0); }
 
 //------------------------------------------------------------------------------
 // generate_random_path: gera um caminho aleatorio
@@ -76,6 +38,48 @@ void generate_random_path(int size, int (&path)[MAX_CITY]) {
   for(int i = 0; i < size; i++)
     path[i] = tmp[i];
 }
+
+//=====================================================================
+// STRUCT DO INDIVIDUO
+//=====================================================================
+struct individual {
+  int size; // tamanho do caminho
+  int path[MAX_CITY]; // caminho
+  double fitness; // aptdao do individuo
+
+  //----------------------------------------------------------------------------
+  // Construtor padrao
+  //----------------------------------------------------------------------------
+  individual() {
+    size = -1;
+    fitness = -1.0;
+  }
+
+  //----------------------------------------------------------------------------
+  // Construtor copiando de outro objeto
+  //----------------------------------------------------------------------------
+  individual(individual*) {
+    size = ind->size;
+    fitness = ind->fitness;
+    for(int i = 0; i < size; i++)
+      path[i] = ind->path[i];
+  }
+
+  //----------------------------------------------------------------------------
+  // calculate_fitness: calcula o valor do caminho
+  //----------------------------------------------------------------------------
+  void calculate_fitness() {
+    fitness = 0.0;
+    for(int i = 1; i < size; i++)
+      fitness += graph->getEdge(path[i], path[i-1]);
+    fitness += graph->getEdge(path[size-1], 0);
+  }
+}; // fim da struct individuo
+
+//------------------------------------------------------------------------------
+// random_to_one: gera um numero pseudo aleatorio entre 0 e 1
+//------------------------------------------------------------------------------
+double random_to_one() { return rand() / (RAND_MAX + 1.0); }
 
 //------------------------------------------------------------------------------
 // generate_pop: gera uma populacao
@@ -131,9 +135,10 @@ int getSecond(individual* pop, int p_size, int fittest_pos) {
 //------------------------------------------------------------------------------
 individual crossover(individual parent1, individual parent2) { // ERRADO
   individual child;
-  int init_pos = (rand() % (parent1.size-1)) + 1;
-  int fin_pos = (rand() % (parent1.size-1)) + 1;
+  int init_pos = (rand() % (parent1.size-1)) + 1; // posicao aleatoria inicial
+  int fin_pos = (rand() % (parent1.size-1)) + 1; // posicao aleatoria final
 
+  // colocando o menor e o maior dos numeros em ordem
   if(init_pos > fin_pos) {
     int aux = fin_pos;
     fin_pos = init_pos;
@@ -142,6 +147,7 @@ individual crossover(individual parent1, individual parent2) { // ERRADO
 
   child.size = parent1.size;
 
+  // vetor para saber quais vertices ja estao no individuo filho
   bool* hasIt = new bool[child.size];
   for(int i = 0; i < child.size; i++)
     hasIt[i] = false;
@@ -154,15 +160,18 @@ individual crossover(individual parent1, individual parent2) { // ERRADO
     hasIt[parent1.path[i]] = true;
   }
 
-  // TESTE
+  // posicao no vetor do parente a ser copiado
   int a_pos = 0;
 
+  // parte do parente 2: antes da posicao inicial do parente 1
   for(int i = 0; i < init_pos; i++) {
     while(hasIt[parent2.path[a_pos]])
           a_pos += 1;
 
     child.path[i] = parent2.path[a_pos++];
   }
+
+  // parte do parente 2: dopois da posicao final do parente 1
   for(int i = fin_pos; i < child.size; i++) {
     while(hasIt[parent2.path[a_pos]])
           a_pos += 1;
@@ -171,21 +180,6 @@ individual crossover(individual parent1, individual parent2) { // ERRADO
   }
 
   child.calculate_fitness();
-
-  /*printf("Parent 1: ");
-  for(int i=0;i<parent1.size;i++) printf("%i ", parent1.path[i]);
-  printf("\nParent 2: ");
-  for(int i=0;i<parent2.size;i++) printf("%i ", parent2.path[i]);
-  printf("\nChild: ");
-  for(int i=0;i<child.size;i++) printf("%i ", child.path[i]);
-  printf("\n");*/
-
-  if(child.path[0] != 0) {
-    printf("ERROR: Crossover failed, aborting program.");
-    printf("%i %i %i\n", parent1.path[0], parent2.path[0], child.path[0]);
-    exit (EXIT_FAILURE);
-  }
-
   return child;
 }
 
@@ -208,17 +202,14 @@ void mutate(individual &ind) {
   }
 
   ind.calculate_fitness();
-  if(ind.path[0] != 0) {
-    printf("ERROR: Mutation failed, aborting program.\n");
-    printf("%i\n", ind.path[0]);
-    exit (EXIT_FAILURE);
-  }
 }
 
 //------------------------------------------------------------------------------
 // tournamentSelection: seleciona os parentes usando selecao por torneio
 //------------------------------------------------------------------------------
-void tournamentSelection(individual* pop, int p_size, individual &p1, individual &p2) {
+void tournamentSelection(individual* pop, int p_size,
+  individual &p1, individual &p2) {
+
   individual* tournament = new individual[TOURNAMENT_SIZE];
   for(int i = 0; i < TOURNAMENT_SIZE; i++)
     tournament[i] = pop[(rand() % (p_size-1))+1];
@@ -236,19 +227,16 @@ individual* evolve_pop(individual* oldPop, int size, int p_size) {
   individual* newPop = new individual[p_size];
   newPop[0] = oldPop[getFittest(oldPop, p_size)]; // elitism
 
+  // gerando filhos por crossover
   for(int i = 1; i < p_size; i++) {
     individual parent1, parent2;
     tournamentSelection(oldPop, p_size, parent1, parent2);
-    //individual parent1 = individual(tournamentSelection(oldPop, p_size));
-    //individual parent2 = individual(tournamentSelection(oldPop, p_size));
     individual child = individual(crossover(parent1, parent2));
-    //printf("%0.2f  %0.2f   to: %0.2f\n", parent1.fitness, parent2.fitness, child.fitness);
     newPop[i] = child;
   }
 
-  for(int i = 1; i < p_size; i++) {
-    mutate(newPop[i]);
-  }
+  // mutando a partir do segundo individuo para manter o elitismo
+  for(int i = 1; i < p_size; i++) mutate(newPop[i]);
 
   return newPop;
 }
