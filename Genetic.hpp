@@ -58,7 +58,7 @@ struct individual {
   //----------------------------------------------------------------------------
   // Construtor copiando de outro objeto
   //----------------------------------------------------------------------------
-  individual(individual*) {
+  individual(individual* ind) {
     size = ind->size;
     fitness = ind->fitness;
     for(int i = 0; i < size; i++)
@@ -180,6 +180,7 @@ individual crossover(individual parent1, individual parent2) { // ERRADO
   }
 
   child.calculate_fitness();
+  delete [] hasIt;
   return child;
 }
 
@@ -218,6 +219,8 @@ void tournamentSelection(individual* pop, int p_size,
   int sec = getSecond(tournament, TOURNAMENT_SIZE, fit);
   p1 = individual(tournament[fit]);
   p2 = individual(tournament[sec]);
+
+  delete [] tournament;
 }
 
 //------------------------------------------------------------------------------
@@ -238,6 +241,7 @@ individual* evolve_pop(individual* oldPop, int size, int p_size) {
   // mutando a partir do segundo individuo para manter o elitismo
   for(int i = 1; i < p_size; i++) mutate(newPop[i]);
 
+  delete [] oldPop;
   return newPop;
 }
 
@@ -251,7 +255,7 @@ double GeneticAlgorithm(MyGraph* g, int* &path) {
   graph = g;
 
   individual* pop = generate_pop(size, p_size);
-  for(int i = 0; i < EVOLUTION_NUM; i++)
+  for(int i = 0; i < (EVOLUTION_NUM*size); i++)
     pop = evolve_pop(pop, size, p_size);
 
   individual ind = pop[getFittest(pop, p_size)];
