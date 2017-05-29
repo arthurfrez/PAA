@@ -45,7 +45,7 @@ int main() {
   ex_time = clock() - ex_time; // tempo gasto para executar
 
   print(g, resp, path);
-  printf("\nExecution time: %0.2fs\n", ((float)ex_time)/CLOCKS_PER_SEC);
+  printf("\nExecution time: %0.3fs\n", ((float)ex_time)/CLOCKS_PER_SEC);
 
   return 0;
 }
